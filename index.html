@@ -5,6 +5,7 @@
 		<title>three.js webgl - geometry - shapes</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 		<style>
             
             
@@ -16,6 +17,30 @@
                 text-align: left;
                 white-space: pre;
     
+            }
+            
+           #rainbow {
+            background: red; /* not working, let's see some red */
+            background: -moz-linear-gradient( top ,
+            rgba(255, 0, 0, 1) 0%,
+            rgba(255, 255, 0, 1) 25%,
+            rgba(0, 255, 0, 1) 50%,
+            rgba(0, 255, 255, 1) 75%,
+            rgba(0, 0, 255, 1) 100%);
+            background: -webkit-gradient(linear,  left top,  left bottom, 
+            color-stop(0%, rgba(255, 0, 0, 1)), 
+            color-stop(25%, rgba(255, 255, 0, 1)),
+            color-stop(50%, rgba(0, 255, 0, 1)),
+            color-stop(75%, rgba(0, 255, 255, 1)),
+            color-stop(100%, rgba(0, 0, 255, 1)));
+            }
+
+            #rainbow {
+                position: absolute;
+                left: 30px;
+                top: 200px;
+                width: 100px;
+                height: 300px;
             }
             
             .button {
@@ -47,7 +72,8 @@
 	</head>
 	<body>
         <div id="tooltip" class="tool"></div>
-        
+        <div id="rainbow"></div>
+
         
         
 		<script src="js/three.js"></script>
@@ -56,6 +82,8 @@
 <!--		<script src="../../Downloads/stats.js-master/build/stats.min.js"></script>-->
 
 		<script>
+            var tempColor; 
+
 			var container, stats;
 			var camera, scene, renderer, raycaster;
 			var group;
@@ -137,8 +165,8 @@
 				scene = new THREE.Scene();
                 scene.fog = new THREE.Fog( 0x111111, 0, 3000 );
 
-				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera.position.set( 0, 150, 600 );
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1200 );
+				camera.position.set( 0, 150, 650 );
 				scene.add( camera );
 				var light = new THREE.PointLight( 0xffffff, 0.8 );
 				camera.add( light );
@@ -183,7 +211,7 @@
                 var colorDiv = 100;
                 rainbow.setNumberRange(1, colorDiv);
                 //rainbow.setSpectrum('#f6eff7', '#bdc9e1','#67a9cf','#1c9099','#016c59');
-                rainbow.setSpectrum('#4B0082', 'blue', 'lightblue', 'green', 'yellow', 'orange','red');
+                rainbow.setSpectrum('blue', 'lightblue', 'green', 'yellow', 'orange','red');
                 // ECAL BARREL
                 var maxTime = calcTravel(R, L/2+20)-calcTravel(R, 0);
 
@@ -195,7 +223,7 @@
                 }
                 
                 // ECAL ENDCAP
-                for(var i = 0; i <= EE_DIV; i++){
+                for(var i = Math.floor(EE_DIV/3); i <= EE_DIV; i++){
                     var r = round(i/EE_DIV*R,2);
                     
                     var endcapArcShape = new THREE.Shape();
@@ -287,15 +315,19 @@
                 var intersects = raycaster.intersectObjects( group.children, true);
 				group.rotation.y += ( targetRotation - group.rotation.y ) * 0.05;
                 
-                
 				if ( intersects.length > 0 ) {
 					if ( currentIntersected !== undefined ) {
 						currentIntersected.material.linewidth = defaultLineWidth;
+                        if(tempColor)
+                            currentIntersected.material.color.setHex(tempColor);
+
 					}
 					currentIntersected = intersects[ 0 ].object;
                     //var loc = currentIntersected.point;
 
 					currentIntersected.material.linewidth = 10;
+                    tempColor = currentIntersected.material.color.getHex();
+                    currentIntersected.material.color.setHex(0xFFFFFF);
                     var r = currentIntersected.geometry.vertices[0].x;
 //                    tool.transform = "translate(200px,40px)";
                     var text =  'eta:        ';
@@ -311,6 +343,9 @@
 				} else {
 					if ( currentIntersected !== undefined ) {
 						currentIntersected.material.linewidth = defaultLineWidth;
+                        if(tempColor)
+                            currentIntersected.material.color.setHex(tempColor);
+
 					}
 					currentIntersected = undefined;
                    tool.style.left = 9000 + 'px';
