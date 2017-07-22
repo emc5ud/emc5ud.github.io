@@ -111,13 +111,6 @@
                 tool.style.textAlign = 'left';
                 tool.style.top = '10px';
                 tool.style.left = '10x';
-				var info = document.createElement( 'div' );
-				info.style.position = 'absolute';
-				info.style.top = '10px';
-				info.style.width = '100%';
-				info.style.textAlign = 'center';
-				info.innerHTML = 'Simple procedurally-generated shapes<br/>Drag to spin';
-				container.appendChild( info );
                 container.appendChild( tool );
                 var eb_button = document.createElement('div');
                 eb_button.className = 'button';
@@ -206,8 +199,8 @@
                     var r = round(i/EE_DIV*R,2);
                     
                     var endcapArcShape = new THREE.Shape();
-				    endcapArcShape.moveTo( 50, 10 );  
-				    endcapArcShape.absarc( 0, 0, r, 0, Math.PI * 2, false )
+		    endcapArcShape.moveTo( 50, 10 );  
+		    endcapArcShape.absarc( 0, 0, r, 0, Math.PI * 2, false )
                     var time = calcTravel(r,L/2+10)-calcTravel(R, 0);
                     var colorPos = Math.round(time/maxTime*colorDiv);
                     addLineShape(endcapArcShape, '#'+ rainbow.colourAt(colorPos), 0, 100, L/2+20, 0, 0, 0, 1, endcapGroup);
