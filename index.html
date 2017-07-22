@@ -34,7 +34,35 @@
             color-stop(75%, rgba(0, 255, 255, 1)),
             color-stop(100%, rgba(0, 0, 255, 1)));
             }
+            
+            .legendLabel {
+/*                background: none;*/
+                position: absolute;
+                top: 200px;
+                left: 140px;
+                color: white;
+                white-space: pre;
+                font-size: 18px;
+            }
+            .legendTitle{
+                position: absolute;
+                color: white;
+                top: 170px;
+                left: 20px;
+                font-size: 20px;
 
+            }
+            
+            .title{
+                position:absolute;
+                color:white;
+                top: 20px;
+                width: 100%;
+                text-align: center;
+                font-size: 50px;
+            }
+            
+            
             #rainbow {
                 position: absolute;
                 left: 30px;
@@ -45,7 +73,7 @@
             
             .button {
                 position: absolute;
-                top: 30px;
+                top: 550px;
                 left: 30px;
                 background: #1c9099;
                 font-size: 25px;
@@ -133,6 +161,10 @@
 			function init() {
                 container = document.createElement( 'div' );
 				document.body.appendChild( container );
+                var info = document.createElement('div');
+                info.className = 'title';
+                info.innerHTML = "CMS ECAL Detector";
+                container.appendChild(info);
                 
                 tool = document.getElementById('tooltip');
                 tool.innerHTML = 'text example';
@@ -161,7 +193,18 @@
                         object.visible = !object.visible; } );
                 }
                 
+                var label = document.createElement('div');
+                label.className = "legendLabel";
+                //I'm bad and I should feel bad
+                label.innerHTML = "- 10.6\n\n\n\n\n\n- 7.45\n\n\n\n\n\n\n- 4.30"
                 
+                var title = document.createElement('div');
+                title.className = "legendTitle";
+                //I'm bad and I should feel bad
+                title.innerHTML = "Travel Time (ns)";
+                container.appendChild(label);
+                container.appendChild(title);
+
 				scene = new THREE.Scene();
                 scene.fog = new THREE.Fog( 0x111111, 0, 3000 );
 
