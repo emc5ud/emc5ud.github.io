@@ -93,8 +93,8 @@
                 return -Math.log(Math.tan(theta/2));
             }
             
-            function calcTravel(z) {
-                var distance = Math.sqrt(z*z+R*R);
+            function calcTravel(r, z) {
+                var distance = Math.sqrt(z*z+r*r);
                 return distance/100/c*1e9;
             }
             
@@ -188,14 +188,14 @@
                 var rainbow = new Rainbow();
                 var colorDiv = 100;
                 rainbow.setNumberRange(1, colorDiv);
-                rainbow.setSpectrum('#f6eff7', '#bdc9e1','#67a9cf','#1c9099','#016c59');
-                //    rainbow.setSpectrum('yellow', 'orange','red');
+                //rainbow.setSpectrum('#f6eff7', '#bdc9e1','#67a9cf','#1c9099','#016c59');
+                rainbow.setSpectrum('#4B0082', 'blue', 'lightblue', 'green', 'yellow', 'orange','red');
                 // ECAL BARREL
-                var maxTime = calcTravel(L/2)-calcTravel(0);
+                var maxTime = calcTravel(R, L/2+20)-calcTravel(R, 0);
 
                 for(var i = 0; i <= EB_DIV; i++){
                     var z =  round(i/EB_DIV*L-L/2,2);
-                    var time = calcTravel(z)-calcTravel(0);
+                    var time = calcTravel(R, z)-calcTravel(R, 0);
                     var colorPos = Math.round(time/maxTime*colorDiv);
 				    addLineShape( arcShape, '#'+ rainbow.colourAt(colorPos),  0,    100, z, 0, 0, 0, 1, barrelGroup );
                 }
@@ -207,9 +207,10 @@
                     var endcapArcShape = new THREE.Shape();
 				    endcapArcShape.moveTo( 50, 10 );  
 				    endcapArcShape.absarc( 0, 0, r, 0, Math.PI * 2, false )
-                    
-                    addLineShape(endcapArcShape, "#FFFFFF", 0, 100, L/2+20, 0, 0, 0, 1, endcapGroup);
-                    addLineShape(endcapArcShape, "#FFFFFF", 0, 100, -L/2-20, 0, 0, 0, 1 , endcapGroup);
+                    var time = calcTravel(r,L/2+10)-calcTravel(R, 0);
+                    var colorPos = Math.round(time/maxTime*colorDiv);
+                    addLineShape(endcapArcShape, '#'+ rainbow.colourAt(colorPos), 0, 100, L/2+20, 0, 0, 0, 1, endcapGroup);
+                    addLineShape(endcapArcShape, '#'+ rainbow.colourAt(colorPos), 0, 100, -L/2-20, 0, 0, 0, 1 , endcapGroup);
                 }
                 group.add(barrelGroup);
                 group.add(endcapGroup);
@@ -303,8 +304,13 @@
 					currentIntersected.material.linewidth = 10;
                     var r = currentIntersected.geometry.vertices[0].x;
 //                    tool.transform = "translate(200px,40px)";
-                    var text = 'eta:        ' + round(calcEta(r, currentIntersected.position.z)+.00001,3)
-                                + "\ntravel time: " + round(calcTravel(currentIntersected.position.z),3) + ' ns';
+                    var text =  'eta:        ';
+                    if(currentIntersected.position.z >-.0001) text+=' ';
+                    
+                    text += round(calcEta(r, currentIntersected.position.z)+.00001,3)
+                            + "\ntravel time: " + round(calcTravel(r,currentIntersected.position.z),3) 
+                            + ' ns\nintervals:   ' 
+                            + Math.ceil(calcTravel(r,currentIntersected.position.z)/(.001*30),0);
                     tool.innerHTML = text;
 					//sphereInter.visible = true;
 					//sphereInter.position.copy( intersects[ 0 ].point );
