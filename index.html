@@ -19,7 +19,7 @@
     
             }
             
-           #rainbow {
+           .rainbow {
             background: red; /* not working, let's see some red */
             background: -moz-linear-gradient( top ,
             rgba(255, 0, 0, 1) 0%,
@@ -63,7 +63,7 @@
             }
             
             
-            #rainbow {
+            .rainbow {
                 position: absolute;
                 left: 30px;
                 top: 200px;
@@ -73,8 +73,8 @@
             
             .button {
                 position: absolute;
-                top: 550px;
-                left: 30px;
+                top: 70px;
+                left: 10px;
                 background: #1c9099;
                 font-size: 25px;
                 padding: 8px 13px;
@@ -99,11 +99,7 @@
         
 	</head>
 	<body>
-        <div id="tooltip" class="tool"></div>
-        <div id="rainbow"></div>
-
-        
-        
+        <div id="tooltip" class="tool"></div>    
 		<script src="js/three.js"></script>
         <script src="js/rainbowvis.js"></script>
 
@@ -178,7 +174,7 @@
                 var ee_button = document.createElement('div');
                 ee_button.className = 'button';
                 ee_button.innerHTML = 'toggle EE';
-                ee_button.style.left = '200px';
+                ee_button.style.left = '170px';
                 container.appendChild( ee_button );
                 container.appendChild( eb_button );
                 eb_button.onclick = function toggleEB(){
@@ -196,8 +192,13 @@
                 var label = document.createElement('div');
                 label.className = "legendLabel";
                 //I'm bad and I should feel bad
+                //using a legit legend would be better here than manually drawing one
                 label.innerHTML = "- 10.6\n\n\n\n\n\n- 7.45\n\n\n\n\n\n\n- 4.30"
                 
+                //var legend = document.createElement('div');
+                var legend =document.createElement('div');
+                legend.className = 'rainbow';
+                container.appendChild(legend);
                 var title = document.createElement('div');
                 title.className = "legendTitle";
                 //I'm bad and I should feel bad
