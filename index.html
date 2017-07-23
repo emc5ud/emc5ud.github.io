@@ -122,7 +122,7 @@
             var EE_DIV = 30;
             var L = 537;
             var R = 129;
-            var defaultLineWidth = 3;
+            var defaultLineWidth = 1;
             var mouse = new THREE.Vector2();
             var currentIntersected;
             var tool;
@@ -207,7 +207,7 @@
                 container.appendChild(title);
 
 				scene = new THREE.Scene();
-                scene.fog = new THREE.Fog( 0x111111, 0, 3000 );
+                scene.fog = new THREE.Fog( 0xffffff, 0, 3000 );
 
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1200 );
 				camera.position.set( 0, 150, 650 );
@@ -215,17 +215,19 @@
 				var light = new THREE.PointLight( 0xffffff, 0.8 );
 				camera.add( light );
 				group = new THREE.Group();
+                //two subgroups used to handle toggling sections
                 endcapGroup = new THREE.Group();
                 barrelGroup = new THREE.Group();
 
 				group.position.y = 50;
 				scene.add( group );
-				// it's necessary to apply these settings in order to correctly display the texture on a shape geometry
 
+                //raycaster handles mouse-object intersection
                 raycaster = new THREE.Raycaster();
 				raycaster.linePrecision = 3;
+                //creates dots on a shape, and connects the dots
+                //shapeParent in the group the shape is added to
 				function addLineShape( shape, color, x, y, z, rx, ry, rz, s, shapeParent) {
-					// lines
 					shape.autoClose = true;
 					var spacedPoints = shape.createSpacedPointsGeometry( 60 );
 					// line from equidistance sampled points
@@ -271,8 +273,8 @@
                     var r = round(i/EE_DIV*R,2);
                     
                     var endcapArcShape = new THREE.Shape();
-		    endcapArcShape.moveTo( 50, 10 );  
-		    endcapArcShape.absarc( 0, 0, r, 0, Math.PI * 2, false )
+		            endcapArcShape.moveTo( 50, 10 );  
+		            endcapArcShape.absarc( 0, 0, r, 0, Math.PI * 2, false )
                     var time = calcTravel(r,L/2+10)-calcTravel(R, 0);
                     var colorPos = Math.round(time/maxTime*colorDiv);
                     addLineShape(endcapArcShape, '#'+ rainbow.colourAt(colorPos), 0, 100, L/2+20, 0, 0, 0, 1, endcapGroup);
@@ -361,19 +363,14 @@
                 
 				if ( intersects.length > 0 ) {
 					if ( currentIntersected !== undefined ) {
-						currentIntersected.material.linewidth = defaultLineWidth;
                         if(tempColor)
                             currentIntersected.material.color.setHex(tempColor);
 
 					}
 					currentIntersected = intersects[ 0 ].object;
-                    //var loc = currentIntersected.point;
-
-					currentIntersected.material.linewidth = 10;
                     tempColor = currentIntersected.material.color.getHex();
                     currentIntersected.material.color.setHex(0xFFFFFF);
                     var r = currentIntersected.geometry.vertices[0].x;
-//                    tool.transform = "translate(200px,40px)";
                     var text =  'eta:        ';
                     if(currentIntersected.position.z >-.0001) text+=' ';
                     
@@ -382,11 +379,8 @@
                             + ' ns\nintervals:   ' 
                             + Math.ceil(calcTravel(r,currentIntersected.position.z)/(.001*30),0);
                     tool.innerHTML = text;
-					//sphereInter.visible = true;
-					//sphereInter.position.copy( intersects[ 0 ].point );
 				} else {
 					if ( currentIntersected !== undefined ) {
-						currentIntersected.material.linewidth = defaultLineWidth;
                         if(tempColor)
                             currentIntersected.material.color.setHex(tempColor);
 
